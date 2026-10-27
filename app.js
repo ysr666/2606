@@ -25,10 +25,10 @@ const escapeHTML = v=>String(v).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",
 const photoURL = s=>"assets/"+s;
 let activeIndex=0;
 function renderActivities(filter){
- const subset=filter==="all"?activities:activities.filter(a=>a.category===filter);
+ const subset=(filter==="all"?activities:activities.filter(a=>a.category===filter)).slice(0,3);
  document.getElementById("eventsGrid").innerHTML=subset.map(a=>
  '<article class="event-card"><div class="event-card-photo"><img src="'+photoURL(a.photo)+'" alt="'+escapeHTML(a.title)+'相关照片" loading="lazy"><span>'+escapeHTML(a.tag)+'</span></div>'+
- '<div class="event-card-info"><div class="event-meta">'+escapeHTML(a.date)+'</div><h3>'+escapeHTML(a.title)+'</h3><p>'+escapeHTML(a.text)+'</p><footer><span>机械类2606 · 活动纪实</span><span aria-hidden="true">↗</span></footer></div></article>'
+ '<div class="event-card-info"><div class="event-meta">'+escapeHTML(a.date)+'</div><h3>'+escapeHTML(a.title)+'</h3><p>'+escapeHTML(a.text)+'</p><footer><span>机械类2606 · 班级动态</span><span aria-hidden="true">↗</span></footer></div></article>'
  ).join("");
 }
 function renderPictures(){
@@ -59,12 +59,7 @@ document.addEventListener("DOMContentLoaded",()=>{
  const observer=new IntersectionObserver(entries=>{
   for(const entry of entries){if(entry.isIntersecting){buttons.forEach(a=>a.classList.toggle("active",a.getAttribute("href")==="#"+entry.target.id));}}
  },{rootMargin:"-30% 0px -58% 0px"});
- for(const id of ["home","about","theme","events","gallery","identity"]){const el=document.getElementById(id);if(el)observer.observe(el);}
- document.getElementById("filters").addEventListener("click",e=>{
-  const b=e.target.closest("button[data-filter]");if(!b)return;
-  document.querySelectorAll("#filters button").forEach(btn=>{const selected=btn===b;btn.classList.toggle("selected",selected);btn.setAttribute("aria-pressed",String(selected));});
-  renderActivities(b.dataset.filter);
- });
+ for(const id of ["home","about","identity","life","gallery","events"]){const el=document.getElementById(id);if(el)observer.observe(el);}
  document.getElementById("photoGrid").addEventListener("click",e=>{const el=e.target.closest("[data-index]");if(el)showLightbox(Number(el.dataset.index));});
  const more=document.getElementById("showPhotos"),grid=document.getElementById("photoGrid");
  more.addEventListener("click",()=>{
