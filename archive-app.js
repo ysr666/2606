@@ -2,6 +2,7 @@
 document.addEventListener("DOMContentLoaded",function(){
  const data=window.CLASS_ARCHIVE;
  const $=id=>document.getElementById(id);
+ const publicText=v=>String(v==null?"":v).replace(/最佳团日动员大会/g,"班级动员大会").replace(/最佳团日/g,"班级活动");
  const esc=v=>String(v==null?"":v).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
  const safeURL=url=>/^https:\/\//.test(url)?url:"#";
  const query=new URLSearchParams(window.location.search);
@@ -61,10 +62,10 @@ document.addEventListener("DOMContentLoaded",function(){
     const picture=e.photos[0];
     const media=picture?'<img src="'+esc(picture.src)+'" alt="'+esc(picture.alt)+'" loading="lazy">':
     '<div class="image-blank" aria-hidden="true">2606</div>';
-    return '<a href="tuanri.html?id='+e.id+'" class="archive-card" aria-label="查看活动：'+esc(e.title)+'">'+
+    return '<a href="activities.html?id='+e.id+'" class="archive-card" aria-label="查看活动：'+esc(publicText(e.title))+'">'+
        '<div class="archive-card-image">'+media+'<em>'+esc(e.chapter)+'</em></div>'+
        '<div class="archive-card-content"><div class="archive-card-meta"><span>'+esc(e.date)+'</span><span>NO. '+e.id+'</span></div>'+
-       '<h3>'+esc(e.title)+'</h3><p>'+esc(e.summary.slice(0,92))+(e.summary.length>92?"…":"")+'</p>'+
+       '<h3>'+esc(publicText(e.title))+'</h3><p>'+esc(publicText(e.summary.slice(0,92)))+(e.summary.length>92?"…":"")+'</p>'+
        '<div class="archive-card-footer"><span>'+e.photos.length+' 张活动相关图片</span><span aria-hidden="true">↗</span></div></div></a>';
    }).join("");
   }
@@ -81,16 +82,16 @@ document.addEventListener("DOMContentLoaded",function(){
  }
  function renderDetail(e){
   $("catalogueView").hidden=true;$("detailView").hidden=false;
-  document.title=e.title+"｜机械类2606团日档案";
-  $("detailTrailTitle").textContent=e.title;
+  document.title=publicText(e.title)+"｜机械类2606班级活动";
+  $("detailTrailTitle").textContent=publicText(e.title);
   $("detailChapter").textContent=e.chapter;
   $("detailNumber").textContent="NO. "+e.id+" / 32"+(e.status==="原创创编项目"?" · 创编成果":"");
-  $("detailTitle").textContent=e.title;
-  $("detailSummary").textContent=e.summary;
+  $("detailTitle").textContent=publicText(e.title);
+  $("detailSummary").textContent=publicText(e.summary);
   $("detailDate").textContent=e.date;
   $("detailLocation").textContent=e.place;
   $("detailOrganizer").textContent=e.organization;
-  $("detailParagraphs").innerHTML=e.paragraphs.filter(p=>!p.startsWith(e.summary.slice(0,65))).map(p=>'<p>'+esc(p)+'</p>').join("");
+  $("detailParagraphs").innerHTML=e.paragraphs.filter(p=>!p.startsWith(e.summary.slice(0,65))).map(p=>'<p>'+esc(publicText(p))+'</p>').join("");
   const myReports=data.reports.filter(r=>e.reports.includes(data.reports.indexOf(r)));
   $("detailReports").innerHTML=myReports.length?
    '<div class="detail-related"><h3>相关公开报道</h3>'+myReports.map(reportLink).join("")+'</div>':"";
@@ -104,8 +105,8 @@ document.addEventListener("DOMContentLoaded",function(){
   });
   const idx=data.entries.indexOf(e);
   const prev=data.entries[(idx-1+data.entries.length)%data.entries.length],next=data.entries[(idx+1)%data.entries.length];
-  $("prevActivity").href="tuanri.html?id="+prev.id;$("prevActivity").textContent="← "+prev.title;
-  $("nextActivity").href="tuanri.html?id="+next.id;$("nextActivity").textContent=next.title+" →";
+  $("prevActivity").href="activities.html?id="+prev.id;$("prevActivity").textContent="← "+publicText(prev.title);
+  $("nextActivity").href="activities.html?id="+next.id;$("nextActivity").textContent=publicText(next.title)+" →";
  }
  if(event)renderDetail(event);
  else renderList();
